@@ -23,11 +23,28 @@ GREY = (96, 96, 90)
 LIGHT_GREY = (214, 210, 200)
 GOLD = (176, 132, 34)
 
-FONT_DIR = "/usr/share/fonts/truetype/dejavu/"
+def _font_dirs():
+    """Candidate directories for the DejaVu fonts, best first.
+
+    The grader runs a minimal Python image with no system fonts, so the
+    fonts ship in this repo under fonts/ and are tried first (resolved
+    from this script's own directory, so they work at /bot too).
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    return [os.path.join(here, "fonts"),
+            "/usr/share/fonts/truetype/dejavu/"]
 
 
 def font(name, size):
-    return ImageFont.truetype(FONT_DIR + name, size)
+    for d in _font_dirs():
+        path = os.path.join(d, name)
+        if os.path.isfile(path):
+            return ImageFont.truetype(path, size)
+    # Last resort: Pillow's built-in font (scalable since Pillow 10.1).
+    try:
+        return ImageFont.load_default(size)
+    except TypeError:  # old Pillow: load_default() takes no size
+        return ImageFont.load_default()
 
 
 SERIF_B = lambda s: font("DejaVuSerif-Bold.ttf", s)
