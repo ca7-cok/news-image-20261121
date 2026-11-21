@@ -5,12 +5,15 @@ news infographic. Pure Pillow, fully deterministic: same code, same bytes.
 News verified 2026-11-21 (UTC) against AP, Reuters, AFP, Al Jazeera,
 Scientific American, The Hindu and The Times.
 """
+import os
 import textwrap
 
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1024, 1024
-OUT = "entry.png"
+# The grader runs with the repo read-only at /bot and only MAKEFUN_OUTPUT_DIR
+# writable: honour it when set, otherwise write next to this script.
+OUT = os.path.join(os.environ.get("MAKEFUN_OUTPUT_DIR", "."), "entry.png")
 
 PAPER = (247, 243, 234)   # warm newsprint
 INK = (24, 24, 22)
